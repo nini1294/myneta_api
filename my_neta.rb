@@ -13,6 +13,20 @@ class MyNeta < Roda
             }
         end
 
+        r.on 'scrape' do
+            
+            # Get all states
+            r.is do
+                neta_scraper()
+            end
+
+            # Get one state only
+            r.get 'state' do |state|
+                neta_scraper(state)
+            end
+
+        end
+
         # /message branch
         r.on 'message' do
 

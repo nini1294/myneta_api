@@ -8,3 +8,14 @@ STATES = [
   'Puducherry', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
   'Telangana', 'Tripura', 'Uttarakhand', 'Uttar Pradesh', 'West Bengal'
 ]
+
+def neta_scraper(states = STATES)
+    
+    ret = {}
+
+    states.each do |state|
+        ret < state;
+    end
+
+    return ret
+end
