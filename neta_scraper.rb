@@ -9,13 +9,27 @@ STATES = [
   'Telangana', 'Tripura', 'Uttarakhand', 'Uttar Pradesh', 'West Bengal'
 ]
 
-def neta_scraper(states = STATES)
+def neta_scraper(state)
+    ret = {}
+    if STATES.member?(state)
+        arr = [state]
+        ret[:state] = arr
+    else
+        ret[:error] = 'That is not a valid state'
+    end
+    return ret
+end
+
+def neta_scraper_all()
     
     ret = {}
+    arr = []
 
-    states.each do |state|
-        ret < state;
+    STATES.each do |state|
+        arr << state;
     end
+
+    ret[:states] = arr
 
     return ret
 end

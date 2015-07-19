@@ -1,5 +1,6 @@
 require 'roda'
 require 'json'
+require './neta_scraper'
 
 class MyNeta < Roda
 
@@ -17,11 +18,11 @@ class MyNeta < Roda
             
             # Get all states
             r.is do
-                neta_scraper()
+                neta_scraper_all()
             end
 
             # Get one state only
-            r.get 'state' do |state|
+            r.get ':state' do |state|
                 neta_scraper(state)
             end
 
