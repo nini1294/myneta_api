@@ -1,4 +1,5 @@
 require 'nokogiri'
+require './models.rb'
 
 STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chattisgarh',

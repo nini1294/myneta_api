@@ -1,6 +1,7 @@
 require 'roda'
 require 'json'
 require './neta_scraper'
+require './models.rb'
 
 class MyNeta < Roda
 
@@ -22,8 +23,12 @@ class MyNeta < Roda
             end
 
             # Get one state only
-            r.get ':state' do |state|
+            r.get 'one/:state' do |state|
                 neta_scraper(state)
+            end
+
+            r.get 'check_db' do
+                hello_db
             end
 
         end
