@@ -28,7 +28,7 @@ class MyNeta < Roda
             end
 
             r.get 'check_db' do
-                hello_db
+                # hello_db
             end
 
         end
