@@ -3,8 +3,8 @@ require 'pg'
 
 Sequel.migration do
     up do
-        create_table(:states) do
-            primary_key :id
+        create_table(:mlas) do
+            primary_key :mla_id
             String :state, :null => false
             String :name, :null => false
             String :constituency, :null => false
@@ -16,6 +16,6 @@ Sequel.migration do
     end
 
     down do
-        drop_table(:states)
+        drop_table(:mlas)
     end
 end
