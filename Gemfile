@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Ruby Version
-ruby '2.2.1'
+ruby "#{`ruby -v`.slice(/\d[.]\d[.]\d/)}"
 
 gem 'rake'
 gem 'roda'
