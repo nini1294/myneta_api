@@ -23,7 +23,7 @@ class MyNeta < Roda
             end
 
             # Get one state only
-            r.get 'one/:state' do |state|
+            r.get ':state' do |state|
                 neta_scraper(state)
             end
 
