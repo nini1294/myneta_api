@@ -1,5 +1,4 @@
 require 'sequel'
-require 'pg'
 
 Sequel.migration do
     up do
