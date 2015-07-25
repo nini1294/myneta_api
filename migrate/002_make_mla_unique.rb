@@ -3,7 +3,7 @@ require 'sequel'
 Sequel.migration do
     up do
         alter_table(:mlas) do
-            add_unique_constraint([:constituency, :state], :name => :unique_mla)
+            add_unique_constraint([:name, :constituency, :state], :name => :unique_mla)
         end
     end
     down do
