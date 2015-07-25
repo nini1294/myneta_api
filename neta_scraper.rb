@@ -33,7 +33,11 @@ def neta_scraper_all()
     arr = []
 
     STATES.each do |state|
-        arr << state
+        begin
+            arr << get_mlas(state)
+        rescue
+            puts "#{format_state(state)} is already added"
+        end
     end
 
     ret[:states] = arr
