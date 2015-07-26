@@ -15,9 +15,7 @@ def neta_scraper(state)
     ret = {}
     if STATES.member?(state)
         begin
-            mlas = get_mlas(state)
-            ret[:state] = state
-            ret[:mlas] = mlas
+            ret = get_mlas(state)
         rescue
             ret[:error] = 'You can\'t add duplicate MLAs'
         end
@@ -30,17 +28,15 @@ end
 def neta_scraper_all()
     
     ret = {}
-    arr = []
+    ret[:states] = []
 
     STATES.each do |state|
         begin
-            arr << get_mlas(state)
+            ret[:states] << get_mlas(state)
         rescue
             puts "#{format_state(state)} is already added"
         end
     end
-
-    ret[:states] = arr
 
     return ret
 end
@@ -68,7 +64,11 @@ def get_mlas(state)
         # Select only the table rows containing data about the MLAs
         x.children.count.eql?(16)
     end
-    ret = []
+    # Single instance of the formatted state
+    formatted_state = format_state(state)
+    ret = {}
+    # Array containing all the MLAs from one state
+    ret[formatted_state] = []
     instances = []
     mlas.each do |mla|
         elements = mla.children.select do |element|
@@ -76,7 +76,6 @@ def get_mlas(state)
             element.is_a?(Nokogiri::XML::Element)
         end
         data = {}
-        data[:state] = format_state(state)
         data[:name] = elements[1].text
         data[:constituency] = elements[2].text
         data[:party] = elements[3].text
@@ -86,7 +85,8 @@ def get_mlas(state)
         # Format the money from a string to a Bignum
         money = money.split('~')[0].strip[3..-1].gsub(/,/, '').to_i
         data[:assets] = money
-        ret << data
+        data[:state] = formatted_state
+        ret[formatted_state] << data
         instances << MLA.new(data)
     end
     MLA.multi_insert(instances)
