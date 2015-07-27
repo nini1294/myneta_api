@@ -97,11 +97,14 @@ def get_election_url(state)
 end
 
 def get_mps
-    urls = get_mp_url
-    urls.each do |url|
+    urls = get_mp_urls
+    ret = {}
+    urls.each do |url, year|
+        instances = []
+        ret[year] = []
+
         url = URI.parse(url)
-        puts url
-        page = Nokogiri::HTML(open(election_url))
+        page = Nokogiri::HTML(open(url))
         table = page.css('table').last
         mps = table.css('tr').select do |x|
             # Select only the table rows containing data about the MPs
@@ -115,6 +118,7 @@ def get_mps
                 element.is_a?(Nokogiri::XML::Element)
             end
             data = {}
+            data[:year] = year
             data[:name] = elements[1].text
             data[:constituency] = elements[2].text
             data[:party] = elements[3].text
@@ -127,19 +131,26 @@ def get_mps
             # URL to page with details about the MP
             mp_url = mps.first.css('a').last.attributes.first[1].value
             data[:state] = mp_state(mp_url)
+            ret[year] << data
+            instances << MP.new(data)
         end
-    end
-end
-
-def get_mp_url
-    url = URI.parse('http://myneta.info/')
-    page = Nokogiri::HTML(open(url))
-    ret = []
-    3.times do |x|
-        anchor = page.xpath("//*[@id='main']/div/div[2]/div/div[1]/div[3]/div/div[#{x + 1}]/div/div/a[1]")
-        ret << anchor.first['href']
+        # Insert rows
+        MP.multi_insert(instances)
     end
     return ret
+end
+
+def get_mp_urls
+    url = URI.parse('http://myneta.info/')
+    page = Nokogiri::HTML(open(url))
+    urls = []
+    years = []
+    3.times do |x|
+        anchor = page.xpath("//*[@id='main']/div/div[2]/div/div[1]/div[3]/div/div[#{x + 1}]/div/div/a[1]")
+        urls << anchor.first['href']
+        years << page.xpath("//*[@id='main']/div/div[2]/div/div[1]/div[3]/div/div[#{x + 1}]/div").text[/\d\d\d\d/]
+    end
+    return urls.zip(years)
 end
 
 # Helper function to get the state for a particular constituency
