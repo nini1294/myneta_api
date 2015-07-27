@@ -132,10 +132,10 @@ def get_mps
             mp_url = mps.first.css('a').last.attributes.first[1].value
             data[:state] = mp_state(mp_url)
             ret[year] << data
-            instances << MP.new(data)
+            MP.new(data).save
         end
         # Insert rows
-        MP.multi_insert(instances)
+        # MP.multi_insert(instances)
     end
     return ret
 end
