@@ -19,6 +19,8 @@ def neta_scraper(state)
         rescue
             ret[:error] = 'You can\'t add duplicate MLAs'
         end
+    elsif state.eql?('ls')
+        get_mps()
     else
         ret[:error] = 'That is not a valid state'
     end
@@ -43,17 +45,6 @@ end
 
 def format_state(state)
     return state.capitalize.gsub(/_./) {|match| ' ' + match[1].capitalize;}
-end
-
-def get_election_url(state)
-    # Format the state name
-    formatted_state = format_state(state)
-    url = "http://myneta.info/state_assembly.php?state=#{formatted_state}"
-    url = URI.encode(url)
-    url = URI.parse(url)
-    page = Nokogiri::HTML(open(url))
-    winners = page.css('a').select{|x| x.text.eql?('Winners')}
-    winners.first.attributes["href"].value
 end
 
 def get_mlas(state)
@@ -90,5 +81,35 @@ def get_mlas(state)
         instances << MLA.new(data)
     end
     MLA.multi_insert(instances)
+    return ret
+end
+
+def get_election_url(state)
+    # Format the state name
+    formatted_state = format_state(state)
+    url = "http://myneta.info/state_assembly.php?state=#{formatted_state}"
+    url = URI.encode(url)
+    url = URI.parse(url)
+    page = Nokogiri::HTML(open(url))
+    winners = page.css('a').select{|x| x.text.eql?('Winners')}
+    winners.first.attributes["href"].value
+end
+
+def get_mps
+    urls = get_mp_url
+    urls.each do |url|
+        url = URI.parse(url)
+        puts url
+    end
+end
+
+def get_mp_url
+    url = URI.parse('http://myneta.info/')
+    page = Nokogiri::HTML(open(url))
+    ret = []
+    3.times do |x|
+        anchor = page.xpath("//*[@id='main']/div/div[2]/div/div[1]/div[3]/div/div[#{x + 1}]/div/div/a[1]")
+        ret << anchor.first['href']
+    end
     return ret
 end
