@@ -8,7 +8,7 @@ STATES = [
   'jharkhand', 'karnataka', 'kerala', 'madhya_pradesh', 'maharashtra',
   'manipur', 'meghalaya', 'mizoram', 'nagaland', 'odisha',
   'puducherry', 'punjab', 'rajasthan', 'sikkim', 'tamil_nadu',
-  'telangana', 'tripura', 'uttarakhand', 'uttar_pradesh', 'west_bengal'
+  'telangana', 'tripura', 'uttarakhand', 'uttar_pradesh', 'west_bengal',
 ]
 
 def neta_scraper(state)
@@ -41,10 +41,6 @@ def neta_scraper_all()
     end
 
     return ret
-end
-
-def format_state(state)
-    return state.capitalize.gsub(/_./) {|match| ' ' + match[1].capitalize;}
 end
 
 def get_mlas(state)
@@ -84,6 +80,11 @@ def get_mlas(state)
     return ret
 end
 
+def format_state(state)
+    state = state.capitalize.gsub(/(_| )./) {|match| ' ' + match[1].capitalize}
+    return state.gsub(/&/, "And")
+end
+
 def get_election_url(state)
     # Format the state name
     formatted_state = format_state(state)
@@ -100,6 +101,33 @@ def get_mps
     urls.each do |url|
         url = URI.parse(url)
         puts url
+        page = Nokogiri::HTML(open(election_url))
+        table = page.css('table').last
+        mps = table.css('tr').select do |x|
+            # Select only the table rows containing data about the MPs
+            x.children.count.eql?(16)
+        end
+
+        # Add data for each MP for each year
+        mps.each do |mp|
+            elements = mp.children.select do |element|
+                # Select only the table data and not the extra text
+                element.is_a?(Nokogiri::XML::Element)
+            end
+            data = {}
+            data[:name] = elements[1].text
+            data[:constituency] = elements[2].text
+            data[:party] = elements[3].text
+            data[:criminal_cases] = elements[4].text.to_i
+            data[:education] = elements[5].text
+            money = elements[6].text
+            # Format the money from a string to a Bignum
+            money = money.split('~')[0].strip[3..-1].gsub(/,/, '').to_i
+            data[:assets] = money
+            # URL to page with details about the MP
+            mp_url = mps.first.css('a').last.attributes.first[1].value
+            data[:state] = mp_state(mp_url)
+        end
     end
 end
 
@@ -112,4 +140,14 @@ def get_mp_url
         ret << anchor.first['href']
     end
     return ret
+end
+
+# Helper function to get the state for a particular constituency
+def mp_state(url)
+    page = Nokogiri::HTML(open(url))
+    # Text representing the state
+    state_text = page.css('div > h5').first.children.text.strip
+    # Removes the unnecessary text from the String
+    state = state_text[/\(.+\)/][1..-2].downcase
+    return format_state(state)
 end
