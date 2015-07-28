@@ -20,7 +20,7 @@ def neta_scraper(state)
             ret[:error] = 'You can\'t add duplicate MLAs'
         end
     elsif state.eql?('ls')
-        get_mps()
+        ret = get_mps()
     else
         ret[:error] = 'That is not a valid state'
     end
@@ -132,6 +132,7 @@ def get_mps
             mp_url = mp.css('a').last.attributes.first[1].value
             data[:state] = mp_state(mp_url)
             ret[year] << data
+            # Insert single row
             MP.new(data).save
         end
         # Insert rows
