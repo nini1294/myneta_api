@@ -129,7 +129,7 @@ def get_mps
             money = money.split('~')[0].strip[3..-1].gsub(/,/, '').to_i
             data[:assets] = money
             # URL to page with details about the MP
-            mp_url = mps.first.css('a').last.attributes.first[1].value
+            mp_url = mp.css('a').last.attributes.first[1].value
             data[:state] = mp_state(mp_url)
             ret[year] << data
             MP.new(data).save
