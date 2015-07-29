@@ -67,7 +67,6 @@ class MyNeta < Roda
                     }
                 end
             end
-
         end
 
         # /message branch
