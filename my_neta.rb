@@ -37,16 +37,18 @@ class MyNeta < Roda
 
             r.is do
                 ret = {}
-                ret[:states] = []
-                STATES.each do |state|
-                    formatted_state = format_state(state)
-                    ret[:states] << {
-                        :state => formatted_state,
-                        :count => MLA.filter(:state => formatted_state).count,
-                        # Retrieve and format the required MLAs
-                        :mlas => format_mlas(MLA.filter(:state => formatted_state).all)
-                    }
-                end
+                # ret[:states] = []
+                # STATES.each do |state|
+                    # formatted_state = format_state(state)
+                    # ret[:states] << {
+                        # :state => formatted_state,
+                        # :count => MLA.filter(:state => formatted_state).count,
+                        # # Retrieve and format the required MLAs
+                        # :mlas => MLA.filter(:state => formatted_state).all
+                    # }
+                # end
+                ret[:count] = MLA.count
+                ret[:mlas] = format_mlas(MLA.all)
                 ret
             end
             
@@ -57,7 +59,7 @@ class MyNeta < Roda
                         :state => formatted_state,
                         :count => MLA.filter(:state => formatted_state).count,
                         # Retrieve and format the required MLAs
-                        :mlas => format_mlas(MLA.filter(:state => formatted_state).all)
+                        :mlas => format_mlas(MLA.filter(:state => formatted_state).all, [:mla_id, :state])
                     }
                 else
                     {
@@ -81,12 +83,14 @@ class MyNeta < Roda
         end
     end
 
-    # Helper formatting methods
-    def format_mlas(arr)
+    # Helper formatting methods takes a parameter
+    # specifying what to delete
+    def format_mlas(arr, delete = [:mla_id])
         arr.map! do |mla|
             tmp = mla.to_hash
-            tmp.delete(:mla_id)
-            tmp.delete(:state)
+            delete.each do |param|
+                tmp.delete(param)
+            end
             tmp[:assets] = tmp[:assets].to_f
             tmp
         end
