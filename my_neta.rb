@@ -5,12 +5,13 @@ require './neta_scraper'
 class MyNeta < Roda
 
     plugin :json
+    plugin :default_headers, 'Content-Type'=>'application/json'
     
     route do |r|
         # GET / request
         r.root do
             {
-                :ok => true
+                :ok => 'breah'
             }
         end
 
@@ -71,7 +72,7 @@ class MyNeta < Roda
 
         # /message branch
         r.on 'message' do
-
+            
             # /message?data
             r.is do
                 {
