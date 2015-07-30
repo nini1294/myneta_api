@@ -5,13 +5,13 @@ require './neta_scraper'
 class MyNeta < Roda
 
     plugin :json
-    plugin :default_headers, 'Content-Type'=>'application/json'
-    
+        
     route do |r|
         # GET / request
         r.root do
             {
-                :ok => 'breah'
+                :ok => 'breah',
+                :mlas =>  MLA.limit(10).all.map{|mla| mla.format([:mla_id, :state, :assets])}
             }
         end
 
@@ -38,18 +38,8 @@ class MyNeta < Roda
 
             r.is do
                 ret = {}
-                # ret[:states] = []
-                # STATES.each do |state|
-                    # formatted_state = format_state(state)
-                    # ret[:states] << {
-                        # :state => formatted_state,
-                        # :count => MLA.filter(:state => formatted_state).count,
-                        # # Retrieve and format the required MLAs
-                        # :mlas => MLA.filter(:state => formatted_state).all
-                    # }
-                # end
                 ret[:count] = MLA.count
-                ret[:mlas] = format_mlas(MLA.all)
+                ret[:mlas] = MLA.map{|mla| mla.format}
                 ret
             end
             
@@ -60,7 +50,7 @@ class MyNeta < Roda
                         :state => formatted_state,
                         :count => MLA.filter(:state => formatted_state).count,
                         # Retrieve and format the required MLAs
-                        :mlas => format_mlas(MLA.filter(:state => formatted_state).all, [:mla_id, :state])
+                        :mlas => MLA.filter(:state => formatted_state).map{|mla| mla.format(%i'mla_id state')}
                     }
                 else
                     {
@@ -72,7 +62,7 @@ class MyNeta < Roda
 
         # /message branch
         r.on 'message' do
-            
+
             # /message?data
             r.is do
                 {
@@ -80,19 +70,6 @@ class MyNeta < Roda
                     'message' => r['data']
                 }
             end
-        end
-    end
-
-    # Helper formatting methods takes a parameter
-    # specifying what to delete
-    def format_mlas(arr, delete = [:mla_id])
-        arr.map! do |mla|
-            tmp = mla.to_hash
-            delete.each do |param|
-                tmp.delete(param)
-            end
-            tmp[:assets] = tmp[:assets].to_f
-            tmp
         end
     end
 end
