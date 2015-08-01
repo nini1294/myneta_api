@@ -4,9 +4,15 @@ require './neta_scraper'
 
 class MyNeta < Roda
 
+    YEARS = %w'2004 2009 2014'
+
     plugin :json
         
     route do |r|
+
+        # Single initialization of the JSON object returned
+        ret = {}
+
         # GET / request
         r.root do
             {
@@ -34,10 +40,41 @@ class MyNeta < Roda
 
         end
 
+        # Route for getting MPs
+        r.on 'mps' do
+            
+            r.is do
+                ret[:count] = MP.count
+                ret
+            end
+
+            r.on :year do |year|
+                if YEARS.member?(year)
+                    r.is do
+                        ret[:count] = MP.filter(:year => year).count
+                        ret
+                    end
+                    
+                    r.get :state do |state|
+                        if STATES.member?(state)
+                            state = format_state(state)
+                            ret[:count] = MP.filter(:year => year, :state => state).count
+                        else
+                            ret[:valid_states] = STATES
+                        end
+                        ret
+                    end
+                else
+                    ret[:valid_years] = YEARS
+                    ret
+                end
+            end
+        end
+
+        # Route for getting MLAs
         r.on 'mlas' do
 
             r.is do
-                ret = {}
                 ret[:count] = MLA.count
                 ret[:mlas] = MLA.map{|mla| mla.format}
                 ret
