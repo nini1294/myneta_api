@@ -4,7 +4,9 @@ require './neta_scraper'
 
 class MyNeta < Roda
 
+    # All possible years for MPs
     YEARS = %w'2004 2009 2014'
+    
 
     plugin :json
         
@@ -15,9 +17,18 @@ class MyNeta < Roda
 
         # GET / request
         r.root do
+            # Show endpoint examples
             {
-                :ok => 'breah',
-                :mlas =>  MLA.limit(10).all.map{|mla| mla.format([:mla_id, :state, :assets])}
+                :mps => {
+                    :url => '/mps',
+                    :examples => %W'/mps/#{YEARS.sample} /mps/2014/#{MP_STATES.sample}'
+                },
+                :mlas => {
+                    :url => '/mlas',
+                    :examples => %W'/mlas /mlas/maharashtra /mlas/#{MLA_STATES.sample}'
+                },
+                :states => MLA_STATES,
+                :union_territories => MP_STATES - MLA_STATES
             }
         end
 
@@ -42,7 +53,7 @@ class MyNeta < Roda
 
         # Route for getting MPs
         r.on 'mps' do
-            
+
             r.is do
                 ret[:count] = MP.count
                 ret

@@ -144,7 +144,7 @@ def get_mps
             data[:assets] = money
             # URL to page with details about the MP
             mp_url = mp.css('a').last.attributes.first[1].value
-            data[:state] = mp_state(mp_url)
+            data[:state_or_ut] = mp_state(mp_url)
             ret[year] << data
             # Insert single row
             MP.new(data).save
