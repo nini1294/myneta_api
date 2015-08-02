@@ -52,15 +52,17 @@ class MyNeta < Roda
                 if YEARS.member?(year)
                     r.is do
                         ret[:count] = MP.filter(:year => year).count
+                        ret[:mps] = MP.filter(:year => year).order_by(:state, :constituency).map{|mp| mp.format}
                         ret
                     end
                     
                     r.get :state do |state|
-                        if STATES.member?(state)
+                        if MP_STATES.member?(state)
                             state = format_state(state)
                             ret[:count] = MP.filter(:year => year, :state => state).count
+                            ret[:mps] = MP.filter(:year => year, :state => state).order_by(:constituency).map{|mp| mp.format}
                         else
-                            ret[:valid_states] = STATES
+                            ret[:valid_states] = MP_STATES
                         end
                         ret
                     end
@@ -81,7 +83,7 @@ class MyNeta < Roda
             end
             
             r.get ':state' do |state|
-                if STATES.member?(state)
+                if MLA_STATES.member?(state)
                     formatted_state = format_state(state)
                     {
                         :state => formatted_state,
