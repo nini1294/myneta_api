@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'open-uri'
 require './models.rb'
 
-STATES = [
+MLA_STATES = [
   'andhra_pradesh', 'arunachal_pradesh', 'assam', 'bihar', 'chattisgarh',
   'delhi', 'goa', 'gujarat', 'haryana', 'himachal_pradesh', 'jammu_and_kashmir',
   'jharkhand', 'karnataka', 'kerala', 'madhya_pradesh', 'maharashtra',
@@ -11,9 +11,19 @@ STATES = [
   'telangana', 'tripura', 'uttarakhand', 'uttar_pradesh', 'west_bengal',
 ]
 
+MP_STATES = [
+  'andaman_and_nicobar_islands', 'andhra_pradesh', 'arunachal_pradesh',
+  'assam', 'bihar', 'chandigarh', 'chhattisgarh', 'dadra_and_nagar_haveli',
+  'daman_and_diu', 'goa', 'gujarat', 'haryana', 'himachal_pradesh',
+  'jammu_and_kashmir', 'jharkhand', 'karnataka', 'kerala', 'lakshadweep',
+  'madhya_pradesh', 'maharashtra', 'manipur', 'meghalaya', 'mizoram',
+  'nagaland', 'national_capital_territory_of_delhi', 'orissa', 'pondicherry',
+  'puducherry', 'punjab', 'rajasthan', 'sikkim', 'tamil_nadu', 'telangana',
+  'tripura', 'uttarakhand', 'uttaranchal', 'uttar_pradesh', 'west_bengal'
+]
 def neta_scraper(state)
     ret = {}
-    if STATES.member?(state)
+    if MLA_STATES.member?(state)
         begin
             ret = get_mlas(state)
         rescue
@@ -32,7 +42,7 @@ def neta_scraper_all()
     ret = {}
     ret[:states] = []
 
-    STATES.each do |state|
+    MLA_STATES.each do |state|
         begin
             ret[:states] << get_mlas(state)
         rescue
@@ -83,6 +93,10 @@ end
 def format_state(state)
     state = state.capitalize.gsub(/(_| )./) {|match| ' ' + match[1].capitalize}
     return state.gsub(/&/, "And")
+end
+
+def unformat_state(state)
+    state = state.downcase.gsub(/ /, '_')
 end
 
 def get_election_url(state)
