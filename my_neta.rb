@@ -1,6 +1,6 @@
 require 'roda'
 require 'json'
-require 'lib/neta_scraper'
+require './lib/neta_scraper'
 require 'awesome_print'
 
 class MyNeta < Roda
@@ -8,13 +8,16 @@ class MyNeta < Roda
     # All possible years for MPs
     YEARS = %w'2004 2009 2014'
     
+    EXAMPLES = 1
 
-    plugin :json
+    plugin :json, :serializer => proc{|o| JSON.pretty_generate(o)}
+    plugin :render
         
     route do |r|
 
         # Single initialization of the JSON object returned
         ret = {}
+
 
         # GET / request
         r.root do
