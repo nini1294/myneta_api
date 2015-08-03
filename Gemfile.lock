@@ -1,0 +1,27 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    mini_portile (0.6.2)
+    nokogiri (1.6.6.2-x64-mingw32)
+      mini_portile (~> 0.6.0)
+    pg (0.18.2-x64-mingw32)
+    rack (1.6.4)
+    rack-unreloader (1.3.0)
+    rake (10.4.2)
+    roda (2.5.0)
+      rack
+    sequel (4.25.0)
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  nokogiri
+  pg
+  rack-unreloader
+  rake
+  roda
+  sequel
+
+BUNDLED WITH
+   1.10.6
