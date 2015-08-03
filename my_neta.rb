@@ -20,11 +20,13 @@ class MyNeta < Roda
             # Show endpoint examples
             {
                 :mps => {
-                    :url => '/mps',
+                    :endpoint => '/mps',
+                    :sample => '/mps[/year][/state or union_territory]',
                     :examples => %W'/mps/#{YEARS.sample} /mps/2014/#{MP_STATES.sample}'
                 },
                 :mlas => {
-                    :url => '/mlas',
+                    :endpoint => '/mlas',
+                    :sample => '/mlas[/state]',
                     :examples => %W'/mlas /mlas/maharashtra /mlas/#{MLA_STATES.sample}'
                 },
                 :states => MLA_STATES,
@@ -44,11 +46,6 @@ class MyNeta < Roda
             r.get ':state' do |state|
                 neta_scraper(state)
             end
-
-            r.get 'check_db' do
-                # hello_db
-            end
-
         end
 
         # Route for getting MPs
@@ -56,6 +53,7 @@ class MyNeta < Roda
 
             r.is do
                 ret[:count] = MP.count
+                ret[:mps] = MP.order_by(:year, :state_or_ut).map{|mp| mp.format}
                 ret
             end
 
@@ -107,18 +105,6 @@ class MyNeta < Roda
                         :error => 'That is not a valid state'
                     }
                 end
-            end
-        end
-
-        # /message branch
-        r.on 'message' do
-
-            # /message?data
-            r.is do
-                {
-                    'ok' => false,
-                    'message' => r['data']
-                }
             end
         end
     end
