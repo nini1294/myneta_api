@@ -1,6 +1,7 @@
 require 'roda'
 require 'json'
-require './neta_scraper'
+require 'lib/neta_scraper'
+require 'awesome_print'
 
 class MyNeta < Roda
 
