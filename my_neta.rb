@@ -27,7 +27,7 @@ class MyNeta < Roda
                 :mlas => {
                     :endpoint => '/mlas',
                     :sample => '/mlas[/state]',
-                    :examples => %W'/mlas /mlas/maharashtra /mlas/#{MLA_STATES.sample}'
+                    :examples => %W'/mlas /mlas/maharashtra /mlas/#{(MLA_STATES - %w"maharashtra").sample}'
                 },
                 :states => MLA_STATES,
                 :union_territories => MP_STATES - MLA_STATES
