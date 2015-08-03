@@ -1,16 +1,13 @@
 require 'roda'
 require 'json'
-require '/lib/neta_scraper'
+require './lib/neta_scraper'
 
 class MyNeta < Roda
 
     # All possible years for MPs
     YEARS = %w'2004 2009 2014'
     
-    EXAMPLES = 1
-
     plugin :json, :serializer => proc{|o| JSON.pretty_generate(o)}
-    plugin :render
         
     route do |r|
 
