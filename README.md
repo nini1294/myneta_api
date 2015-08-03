@@ -10,8 +10,8 @@ An API *scraped* together to make it easy to see and work with MP and MLA data s
 #### Endpoint : ['/mps'](https://my-neta.herokuapp.com/mps)
 #### Parameters : '/mps[/year][/state or union_territory]'
 #### Examples : 
-+ #### /mps/#{YEARS.sample}
-+ #### /mps/2014/#{MP_STATES.sample}
++ #### /mps/2004
++ #### /mps/2014/goa
 
 ### 2. MLAs
 #### Endpoint : ['/mlas'](https://my-neta.herokuapp.com/mlas)
@@ -19,4 +19,4 @@ An API *scraped* together to make it easy to see and work with MP and MLA data s
 #### Examples :
 + #### /mlas
 + #### /mlas/maharashtra
-+ #### /mlas/#{MLA_STATES.sample}
++ #### /mlas/andhra_pradesh
