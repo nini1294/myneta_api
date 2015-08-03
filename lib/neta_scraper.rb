@@ -2,16 +2,16 @@ require 'nokogiri'
 require 'open-uri'
 require './models.rb'
 
-MLA_STATES = [
+MLA_STATES = %w(
   'andhra_pradesh', 'arunachal_pradesh', 'assam', 'bihar', 'chattisgarh',
   'delhi', 'goa', 'gujarat', 'haryana', 'himachal_pradesh', 'jammu_and_kashmir',
   'jharkhand', 'karnataka', 'kerala', 'madhya_pradesh', 'maharashtra',
   'manipur', 'meghalaya', 'mizoram', 'nagaland', 'odisha',
   'puducherry', 'punjab', 'rajasthan', 'sikkim', 'tamil_nadu',
   'telangana', 'tripura', 'uttarakhand', 'uttar_pradesh', 'west_bengal',
-]
+)
 
-MP_STATES = [
+MP_STATES = %w(
   'andaman_and_nicobar_islands', 'andhra_pradesh', 'arunachal_pradesh',
   'assam', 'bihar', 'chandigarh', 'chhattisgarh', 'dadra_and_nagar_haveli',
   'daman_and_diu', 'goa', 'gujarat', 'haryana', 'himachal_pradesh',
@@ -20,7 +20,7 @@ MP_STATES = [
   'nagaland', 'national_capital_territory_of_delhi', 'orissa', 'pondicherry',
   'puducherry', 'punjab', 'rajasthan', 'sikkim', 'tamil_nadu', 'telangana',
   'tripura', 'uttarakhand', 'uttaranchal', 'uttar_pradesh', 'west_bengal'
-]
+)
 def neta_scraper(state)
     ret = {}
     if MLA_STATES.member?(state)
@@ -30,15 +30,14 @@ def neta_scraper(state)
             ret[:error] = 'You can\'t add duplicate MLAs'
         end
     elsif state.eql?('ls')
-        ret = get_mps()
+        ret = get_mps
     else
         ret[:error] = 'That is not a valid state'
     end
-    return ret
+    ret
 end
 
 def neta_scraper_all()
-    
     ret = {}
     ret[:states] = []
 
@@ -49,8 +48,7 @@ def neta_scraper_all()
             puts "#{format_state(state)} is already added"
         end
     end
-
-    return ret
+    ret
 end
 
 def get_mlas(state)
@@ -87,16 +85,16 @@ def get_mlas(state)
         instances << MLA.new(data)
     end
     MLA.multi_insert(instances)
-    return ret
+    ret
 end
 
 def format_state(state)
     state = state.capitalize.gsub(/(_| )./) {|match| ' ' + match[1].capitalize}
-    return state.gsub(/&/, "And")
+    state.gsub(/&/, 'And')
 end
 
 def unformat_state(state)
-    state = state.downcase.gsub(/ /, '_')
+    state.downcase.gsub(/ /, '_')
 end
 
 def get_election_url(state)
@@ -106,15 +104,14 @@ def get_election_url(state)
     url = URI.encode(url)
     url = URI.parse(url)
     page = Nokogiri::HTML(open(url))
-    winners = page.css('a').select{|x| x.text.eql?('Winners')}
-    winners.first.attributes["href"].value
+    winners = page.css('a').select { |x| x.text.eql?('Winners') }
+    winners.first.attributes['href'].value
 end
 
 def get_mps
-    urls = get_mp_urls
+    urls = mp_urls
     ret = {}
     urls.each do |url, year|
-        instances = []
         ret[year] = []
 
         url = URI.parse(url)
@@ -149,13 +146,11 @@ def get_mps
             # Insert single row
             MP.new(data).save
         end
-        # Insert rows
-        # MP.multi_insert(instances)
     end
-    return ret
+    ret
 end
 
-def get_mp_urls
+def mp_urls
     url = URI.parse('http://myneta.info/')
     page = Nokogiri::HTML(open(url))
     urls = []
@@ -165,7 +160,7 @@ def get_mp_urls
         urls << anchor.first['href']
         years << page.xpath("//*[@id='main']/div/div[2]/div/div[1]/div[3]/div/div[#{x + 1}]/div").text[/\d\d\d\d/]
     end
-    return urls.zip(years)
+    urls.zip(years)
 end
 
 # Helper function to get the state for a particular constituency
@@ -175,5 +170,5 @@ def mp_state(url)
     state_text = page.css('div > h5').first.children.text.strip
     # Removes the unnecessary text from the String
     state = state_text[/\(.+\)/][1..-2].downcase
-    return format_state(state)
+    format_state(state)
 end
