@@ -69,6 +69,7 @@ class MyNeta < Roda
                             ret[:mps] = MP.filter(year: year, state_or_ut: state).order_by(:constituency)
                                         .map { |mp| mp.format(%i(mp_id year state_or_ut)) }
                         else
+                            ret[:error] = 'That is not a valid state or UT'
                             ret[:valid_states] = MP_STATES
                         end
                         ret
@@ -100,7 +101,8 @@ class MyNeta < Roda
                     }
                 else
                     {
-                        error: 'That is not a valid state'
+                        error: 'That is not a valid state',
+                        valid_states: MLA_STATES
                     }
                 end
             end
