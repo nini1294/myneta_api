@@ -1,5 +1,8 @@
 require 'roda'
 require 'json'
+require 'dotenv'
+Dotenv.load
+
 require './lib/neta_scraper'
 
 # Main app class
@@ -8,7 +11,7 @@ class MyNeta < Roda
     YEARS = %w(2004 2009 2014)
 
     plugin :json, serializer: proc { |o| JSON.pretty_generate(o) }
-        
+
     route do |r|
         # Single initialization of the JSON object returned
         ret = {}
@@ -61,7 +64,7 @@ class MyNeta < Roda
                                     .map { |mp| mp.format(%i(mp_id year)) }
                         ret
                     end
-                    
+
                     r.get :state do |state|
                         if MP_STATES.member?(state)
                             state = format_state(state)

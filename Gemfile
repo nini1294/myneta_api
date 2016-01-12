@@ -1,10 +1,11 @@
 source 'https://rubygems.org'
 
 # Ruby Version
-ruby "#{`ruby -v`.slice(/\d[.]\d[.]\d/)}"
+ruby "2.2.1"
 
 gem 'rake'
 gem 'roda'
+gem 'dotenv'
 gem 'nokogiri'
 gem 'sequel'
 gem 'pg'
