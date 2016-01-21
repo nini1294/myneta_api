@@ -4,7 +4,7 @@ An API *scraped* together to make it easy to see and work with MP and MLA data s
 
 ## Example Usage
 
-## Base URL: http://my-neta.herokuapp.com
+## Base URL: http://107.161.29.136
 
 ### 1. MPs
 #### Endpoint : ['/mps'](http://107.161.29.136/mps)
