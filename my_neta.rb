@@ -3,7 +3,7 @@ require 'json'
 require 'dotenv'
 Dotenv.load
 
-require './lib/neta_scraper'
+require_relative 'lib/neta_scraper'
 
 # Main app class
 class MyNeta < Roda
