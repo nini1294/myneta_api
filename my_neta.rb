@@ -110,5 +110,10 @@ class MyNeta < Roda
                 end
             end
         end
+
+        # Route for any other, redirects to root
+        r.on :other do |other|
+          r.redirect('/')
+        end
     end
 end
