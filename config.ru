@@ -1,6 +1,6 @@
 # Run this with rackup
 # Settings for rackup
-#\ -p 80 -o 0.0.0.0
+#\ -o 0.0.0.0
 
 require 'rack/unreloader'
 
