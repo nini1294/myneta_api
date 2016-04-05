@@ -67,7 +67,7 @@ class MyNeta < Roda
 
                     r.get :state do |state|
                         if NetaScraper::MP_STATES.member?(state)
-                            state = format_state(state)
+                            state = NetaScraper.format_state(state)
                             ret[:count] = MP.filter(year: year, state_or_ut: state).count
                             ret[:mps] = MP.filter(year: year, state_or_ut: state).order_by(:constituency)
                                         .map { |mp| mp.format(%i(mp_id year state_or_ut)) }
