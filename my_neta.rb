@@ -23,15 +23,15 @@ class MyNeta < Roda
                 mps: {
                     endpoint: '/mps',
                     sample: '/mps[/year][/state or union_territory]',
-                    examples: %W(/mps/#{YEARS.sample} /mps/2014/#{MP_STATES.sample})
+                    examples: %W(/mps/#{YEARS.sample} /mps/2014/#{NetaScraper::MP_STATES.sample})
                 },
                 mlas: {
                     endpoint: '/mlas',
                     sample: '/mlas[/state]',
-                    examples: %W(/mlas /mlas/maharashtra /mlas/#{(MLA_STATES - %w(maharashtra)).sample})
+                    examples: %W(/mlas /mlas/maharashtra /mlas/#{(NetaScraper::MLA_STATES - %w(maharashtra)).sample})
                 },
-                states: MLA_STATES,
-                union_territories: MP_STATES - MLA_STATES
+                states: NetaScraper::MLA_STATES,
+                union_territories: NetaScraper::MP_STATES - NetaScraper::MLA_STATES
             }
         end
 
@@ -39,12 +39,12 @@ class MyNeta < Roda
         r.on 'scrape' do
             # Get all states
             r.is do
-                neta_scraper_all
+                NetaScraper.scrape_all_mlas
             end
 
             # Get one state only
             r.get ':state' do |state|
-                neta_scraper(state)
+                NetaScraper.scrape_mlas(state)
             end
         end
 
@@ -66,14 +66,14 @@ class MyNeta < Roda
                     end
 
                     r.get :state do |state|
-                        if MP_STATES.member?(state)
+                        if NetaScraper::MP_STATES.member?(state)
                             state = format_state(state)
                             ret[:count] = MP.filter(year: year, state_or_ut: state).count
                             ret[:mps] = MP.filter(year: year, state_or_ut: state).order_by(:constituency)
                                         .map { |mp| mp.format(%i(mp_id year state_or_ut)) }
                         else
                             ret[:error] = 'That is not a valid state or UT'
-                            ret[:valid_states] = MP_STATES
+                            ret[:valid_states] = NetaScraper::MP_STATES
                         end
                         ret
                     end
@@ -93,8 +93,8 @@ class MyNeta < Roda
             end
 
             r.get ':state' do |state|
-                if MLA_STATES.member?(state)
-                    formatted_state = format_state(state)
+                if NetaScraper::MLA_STATES.member?(state)
+                    formatted_state = NetaScraper.format_state(state)
                     {
                         state: formatted_state,
                         count: MLA.filter(state: formatted_state).count,
@@ -105,7 +105,7 @@ class MyNeta < Roda
                 else
                     {
                         error: 'That is not a valid state',
-                        valid_states: MLA_STATES
+                        valid_states: NetaScraper::MLA_STATES
                     }
                 end
             end
