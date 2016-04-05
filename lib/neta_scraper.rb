@@ -1,6 +1,6 @@
 require 'nokogiri'
 require 'open-uri'
-require './models.rb'
+require_relative '../models.rb'
 
 MLA_STATES = %w(
   andhra_pradesh arunachal_pradesh assam bihar chattisgarh
