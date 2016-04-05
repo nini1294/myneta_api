@@ -10,3 +10,7 @@ gem 'nokogiri'
 gem 'sequel'
 gem 'pg'
 gem 'rack-unreloader'
+
+group :test do
+  gem 'rspec-given'
+end
