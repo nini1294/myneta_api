@@ -1,4 +1,6 @@
 require 'sequel'
+require 'dotenv'
+Dotenv.load
 $: << '../lib'
 
 Sequel::Model.plugin :prepared_statements
