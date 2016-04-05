@@ -12,5 +12,6 @@ gem 'pg'
 gem 'rack-unreloader'
 
 group :test do
+  gem 'rack-test'
   gem 'rspec-given'
 end
