@@ -2,6 +2,8 @@ namespace :db do
   desc 'Run migrations'
   task :migrate, [:version] do |t, args|
     require 'sequel'
+    require 'dotenv'
+    Dotenv.load
     Sequel.extension :migration
     DBURL = ENV.fetch('DATABASE_URL')
     db = Sequel.connect(DBURL)
@@ -13,4 +15,10 @@ namespace :db do
       Sequel::Migrator.run(db, 'migrate')
     end
   end
+end
+
+# This is only for testing
+task :hi, [:name] do |t, args|
+  desc 'Say hi'
+  puts "Hi #{args[:name]}"
 end
