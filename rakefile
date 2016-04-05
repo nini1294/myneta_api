@@ -25,6 +25,12 @@ namespace :db do
   end
 end
 
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.pattern = Dir.glob('spec/**/*_spec.rb')
+  t.rspec_opts = '--format documentation'
+end
+
 # This is only for testing
 task :hi, [:name] do |t, args|
   desc 'Say hi'
