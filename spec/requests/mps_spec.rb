@@ -17,7 +17,7 @@ RSpec.describe 'MyNeta mps' do
 
     # Test the number of MPs
     When(:mps) { JSON.parse(resp.body) }
-    Then { mps['count'].eql? 1575 }
+    Then { mps['count'].eql? 1576 }
 
     # Test a single MP
     When(:test_mp) { mps['mps'][1] }

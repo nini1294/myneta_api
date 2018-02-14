@@ -17,7 +17,7 @@ RSpec.describe 'MyNeta mlas' do
 
     # Test the number of MPs
     When(:mlas) { JSON.parse(resp.body) }
-    Then { mlas['count'].eql? 4074 }
+    Then { mlas['count'].eql? 4078 }
 
     # Test a single MLA
     When(:test_mla) { mlas['mlas'][1] }
