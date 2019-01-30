@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Ruby Version
-ruby "2.3.1"
+ruby "2.5.3"
 
 gem 'rake'
 gem 'roda'
