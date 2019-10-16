@@ -6,7 +6,7 @@ ruby "2.5.5"
 gem 'rake'
 gem 'roda'
 gem 'dotenv'
-gem 'nokogiri'
+gem "nokogiri", ">= 1.10.4"
 gem 'sequel'
 gem 'pg'
 gem 'rack-unreloader'
