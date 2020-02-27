@@ -95,7 +95,7 @@ class MyNeta < Roda
                 ret
             end
 
-            r.get ':state' do |state|
+            r.get :state do |state|
                 if NetaScraper::MLA_STATES.member?(state)
                     formatted_state = NetaScraper.format_state(state)
                     {
