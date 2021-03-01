@@ -8,7 +8,7 @@ GEM
     mini_portile2 (2.4.0)
     nokogiri (1.11.0)
       mini_portile2 (~> 2.4.0)
-    nokogiri (1.10.8-x64-mingw32)
+    nokogiri (1.11.0-x64-mingw32)
       mini_portile2 (~> 2.4.0)
     pg (1.2.2)
     pg (1.2.2-x64-mingw32)
