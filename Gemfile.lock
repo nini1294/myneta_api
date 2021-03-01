@@ -44,7 +44,7 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
-  nokogiri (>= 1.10.4)
+  nokogiri (>= 1.11.0)
   pg
   rack-test
   rack-unreloader
