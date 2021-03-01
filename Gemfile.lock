@@ -6,7 +6,7 @@ GEM
     given_core (3.8.0)
       sorcerer (>= 0.3.7)
     mini_portile2 (2.4.0)
-    nokogiri (1.10.8)
+    nokogiri (1.11.0)
       mini_portile2 (~> 2.4.0)
     nokogiri (1.10.8-x64-mingw32)
       mini_portile2 (~> 2.4.0)
