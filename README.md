@@ -4,7 +4,7 @@ An API *scraped* together to make it easy to see and work with MP and MLA data s
 
 ## Example Usage
 
-## Base URL: https://nish.space/my_neta
+## Base URL: https://nish.space/my_neta/
 
 ### 1. MPs
 #### Endpoint : ['/mps'](https://nish.space/my_neta/mps)
