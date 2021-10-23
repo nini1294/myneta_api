@@ -2,6 +2,7 @@ require 'nokogiri'
 require 'open-uri'
 require_relative '../models.rb'
 require_relative './common/constants.rb'
+require_relative './common/utils.rb'
 
 class NetaScraper
 
