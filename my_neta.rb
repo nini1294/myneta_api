@@ -9,9 +9,6 @@ require_relative 'lib/common/utils.rb'
 
 # Main app class
 class MyNeta < Roda
-    # All possible years for MPs
-    YEARS = %w(2004 2009 2014 2019)
-
     plugin :json, serializer: proc { |o| JSON.pretty_generate(o) }
 
     route do |r|
@@ -25,7 +22,7 @@ class MyNeta < Roda
                 mps: {
                     endpoint: '/mps',
                     sample: '/mps[/year][/state or union_territory]',
-                    examples: %W(/mps/#{YEARS.sample} /mps/2014/#{Constants::MP_STATES.sample})
+                    examples: %W(/mps/#{Constants::MP_YEARS.sample} /mps/2014/#{Constants::MP_STATES.sample})
                 },
                 mlas: {
                     endpoint: '/mlas',
@@ -59,7 +56,7 @@ class MyNeta < Roda
             end
 
             r.on :year do |year|
-                if YEARS.member?(year)
+                if Constants::MP_YEARS.member?(year)
                     r.is do
                         ret[:count] = MP.filter(year: year).count
                         ret[:mps] = MP.filter(year: year).order_by(:state_or_ut, :constituency)
@@ -83,7 +80,7 @@ class MyNeta < Roda
                 else
                     response.status = 400
                     ret[:error] = 'That is not a valid year'
-                    ret[:valid_years] = YEARS
+                    ret[:valid_years] = Constants::MP_YEARS
                     ret
                 end
             end
