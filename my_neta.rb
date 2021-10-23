@@ -3,12 +3,14 @@ require 'json'
 require 'dotenv'
 Dotenv.load
 
-require_relative 'lib/neta_scraper'
+require_relative './models.rb'
+require_relative 'lib/common/constants.rb'
+require_relative 'lib/common/utils.rb'
 
 # Main app class
 class MyNeta < Roda
     # All possible years for MPs
-    YEARS = %w(2004 2009 2014)
+    YEARS = %w(2004 2009 2014 2019)
 
     plugin :json, serializer: proc { |o| JSON.pretty_generate(o) }
 
@@ -23,15 +25,15 @@ class MyNeta < Roda
                 mps: {
                     endpoint: '/mps',
                     sample: '/mps[/year][/state or union_territory]',
-                    examples: %W(/mps/#{YEARS.sample} /mps/2014/#{NetaScraper::MP_STATES.sample})
+                    examples: %W(/mps/#{YEARS.sample} /mps/2014/#{Constants::MP_STATES.sample})
                 },
                 mlas: {
                     endpoint: '/mlas',
                     sample: '/mlas[/state]',
-                    examples: %W(/mlas /mlas/maharashtra /mlas/#{(NetaScraper::MLA_STATES - %w(maharashtra)).sample})
+                    examples: %W(/mlas /mlas/maharashtra /mlas/#{(Constants::MLA_STATES - %w(maharashtra)).sample})
                 },
-                states: NetaScraper::MLA_STATES,
-                union_territories: NetaScraper::MP_STATES - NetaScraper::MLA_STATES
+                states: Constants::MLA_STATES,
+                union_territories: Constants::MP_STATES - Constants::MLA_STATES
             }
         end
 
@@ -66,15 +68,15 @@ class MyNeta < Roda
                     end
 
                     r.get :state do |state|
-                        if NetaScraper::MP_STATES.member?(state)
-                            state = NetaScraper.format_state(state)
+                        if Constants::MP_STATES.member?(state)
+                            state = Utils.format_state(state)
                             ret[:count] = MP.filter(year: year, state_or_ut: state).count
                             ret[:mps] = MP.filter(year: year, state_or_ut: state).order_by(:constituency)
                                         .map { |mp| mp.format(%i(mp_id year state_or_ut)) }
                         else
                             response.status = 400
                             ret[:error] = 'That is not a valid state or UT'
-                            ret[:valid_states] = NetaScraper::MP_STATES
+                            ret[:valid_states] = Constants::MP_STATES
                         end
                         ret
                     end
@@ -96,8 +98,8 @@ class MyNeta < Roda
             end
 
             r.get :state do |state|
-                if NetaScraper::MLA_STATES.member?(state)
-                    formatted_state = NetaScraper.format_state(state)
+                if Constants::MLA_STATES.member?(state)
+                    formatted_state = Utils.format_state(state)
                     {
                         state: formatted_state,
                         count: MLA.filter(state: formatted_state).count,
@@ -109,7 +111,7 @@ class MyNeta < Roda
                     response.status = 400
                     {
                         error: 'That is not a valid state',
-                        valid_states: NetaScraper::MLA_STATES
+                        valid_states: Constants::MLA_STATES
                     }
                 end
             end

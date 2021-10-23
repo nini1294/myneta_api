@@ -1,31 +1,13 @@
 require 'nokogiri'
 require 'open-uri'
 require_relative '../models.rb'
+require_relative './common/constants.rb'
 
 class NetaScraper
-  MLA_STATES = %w(
-    andhra_pradesh arunachal_pradesh assam bihar chattisgarh
-    delhi goa gujarat haryana himachal_pradesh jammu_and_kashmir
-    jharkhand karnataka kerala madhya_pradesh maharashtra
-    manipur meghalaya mizoram nagaland odisha
-    puducherry punjab rajasthan sikkim tamil_nadu
-    telangana tripura uttarakhand uttar_pradesh west_bengal
-  )
-
-  MP_STATES = %w(
-    andaman_and_nicobar_islands andhra_pradesh arunachal_pradesh
-    assam bihar chandigarh chhattisgarh dadra_and_nagar_haveli
-    daman_and_diu goa gujarat haryana himachal_pradesh
-    jammu_and_kashmir jharkhand karnataka kerala lakshadweep
-    madhya_pradesh maharashtra manipur meghalaya mizoram
-    nagaland national_capital_territory_of_delhi orissa pondicherry
-    puducherry punjab rajasthan sikkim tamil_nadu telangana
-    tripura uttarakhand uttaranchal uttar_pradesh west_bengal
-  )
 
   def self.scrape_mlas(state)
       ret = {}
-      if MLA_STATES.member?(state)
+      if Constants::MLA_STATES.member?(state)
           begin
               ret = get_mlas(state)
           rescue
@@ -43,11 +25,11 @@ class NetaScraper
       ret = {}
       ret[:states] = []
 
-      MLA_STATES.each do |state|
+      Constants::MLA_STATES.each do |state|
           begin
               ret[:states] << get_mlas(state)
           rescue
-              puts "#{format_state(state)} is already added"
+              puts "#{Utils.format_state(state)} is already added"
           end
       end
       ret
@@ -62,7 +44,7 @@ class NetaScraper
           x.children.count.eql?(16)
       end
       # Single instance of the formatted state
-      formatted_state = format_state(state)
+      formatted_state = Utils.format_state(state)
       ret = {}
       # Array containing all the MLAs from one state
       ret[formatted_state] = []
@@ -94,18 +76,9 @@ class NetaScraper
     puts 'Hi'
   end
 
-  def self.format_state(state)
-      state = state.capitalize.gsub(/(_| )./) {|match| ' ' + match[1].capitalize}
-      state.gsub(/&/, 'And')
-  end
-
-  def self.unformat_state(state)
-      state.downcase.gsub(/ /, '_')
-  end
-
   def self.get_election_url(state)
       # Format the state name
-      formatted_state = format_state(state)
+      formatted_state = Utils.format_state(state)
       url = "http://myneta.info/state_assembly.php?state=#{formatted_state}"
       url = URI.encode(url)
       url = URI.parse(url)
@@ -176,6 +149,6 @@ class NetaScraper
       state_text = page.css('div > h5').first.children.text.strip
       # Removes the unnecessary text from the String
       state = state_text[/\(.+\)/][1..-2].downcase
-      format_state(state)
+      Utils.format_state(state)
   end
 end

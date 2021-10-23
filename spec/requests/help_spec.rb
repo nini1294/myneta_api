@@ -24,7 +24,7 @@ RSpec.describe 'MyNeta help' do
     Then { mlas_example['endpoint'].eql? '/mlas' }
     Then { mlas_example['sample'].eql? '/mlas[/state]' }
 
-    Then { json['states'].eql? NetaScraper::MLA_STATES }
+    Then { json['states'].eql? Constants::MLA_STATES }
 
   end
 
