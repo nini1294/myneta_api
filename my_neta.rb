@@ -13,6 +13,7 @@ class MyNeta < Roda
     YEARS = %w(2004 2009 2014 2019)
 
     plugin :json, serializer: proc { |o| JSON.pretty_generate(o) }
+    plugin :slash_path_empty
 
     route do |r|
         # Single initialization of the JSON object returned
