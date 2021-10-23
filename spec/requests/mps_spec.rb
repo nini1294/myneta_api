@@ -68,7 +68,7 @@ RSpec.describe 'MyNeta mps' do
 
     # Test the number of MPs
     When(:json) { JSON.parse(resp.body) }
-    Then { json['valid_states'].eql? NetaScraper::MP_STATES }
+    Then { json['valid_states'].eql? Constants::MP_STATES }
 
   end
 
