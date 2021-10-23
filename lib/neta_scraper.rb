@@ -75,6 +75,7 @@ class NetaScraper
 
   def self.hi
     puts 'Hi'
+    'Hi'
   end
 
   def self.get_election_url(state)

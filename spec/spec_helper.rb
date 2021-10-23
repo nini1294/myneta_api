@@ -20,6 +20,7 @@
 # Setup all variables and inports for all tests
 ENV["RACK_ENV"] = 'test'
 require_relative '../my_neta'
+require_relative '../lib/neta_scraper'
 require 'rspec/given'
 require 'rack/test'
 
