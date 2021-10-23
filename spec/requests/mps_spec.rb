@@ -38,6 +38,20 @@ RSpec.describe 'MyNeta mps' do
 
   end
 
+  context 'mps by year with a trailing slash' do
+
+    When(:resp) { get '/mps/2014/' }
+    Then { resp.status.eql? 200 }
+
+    # Test the number of MPs
+    When(:mps) { JSON.parse(resp.body) }
+    Then { mps['count'].eql? 542 }
+
+    # Test a single MP
+    When(:test_mp) { mps['mps'][1] }
+
+  end
+
   context 'mps by year and state' do
     When(:resp) { get '/mps/2004/maharashtra' }
     Then { resp.status.eql? 200 }
