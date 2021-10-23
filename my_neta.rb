@@ -35,18 +35,18 @@ class MyNeta < Roda
             }
         end
 
-        # /scrape branch
-        r.on 'scrape' do
-            # Get all states
-            r.is do
-                NetaScraper.scrape_all_mlas
-            end
+        # # /scrape branch
+        # r.on 'scrape' do
+        #     # Get all states
+        #     r.is do
+        #         NetaScraper.scrape_all_mlas
+        #     end
 
-            # Get one state only
-            r.get ':state' do |state|
-                NetaScraper.scrape_mlas(state)
-            end
-        end
+        #     # Get one state only
+        #     r.get ':state' do |state|
+        #         NetaScraper.scrape_mlas(state)
+        #     end
+        # end
 
         # Route for getting MPs
         r.on 'mps' do
