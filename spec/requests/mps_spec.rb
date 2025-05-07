@@ -72,7 +72,7 @@ RSpec.describe 'MyNeta mps' do
 
     # Test the number of MPs
     When(:json) { JSON.parse(resp.body) }
-    Then { json['valid_years'].eql? MyNeta::YEARS }
+    Then { json['valid_years'].eql? Constants::MP_YEARS }
 
   end
 
