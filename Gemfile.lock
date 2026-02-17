@@ -9,12 +9,9 @@ GEM
     nokogiri (1.15.6)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.15.6-x64-mingw32)
-      racc (~> 1.4)
     pg (1.2.2)
-    pg (1.2.2-x64-mingw32)
     racc (1.6.2)
-    rack (2.2.20)
+    rack (2.2.22)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rack-unreloader (1.7.0)
@@ -42,7 +39,7 @@ GEM
 
 PLATFORMS
   ruby
-  x64-mingw32
+  x64-mingw-ucrt
 
 DEPENDENCIES
   dotenv
