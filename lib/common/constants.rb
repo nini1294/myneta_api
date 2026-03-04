@@ -18,4 +18,8 @@ class Constants
     puducherry punjab rajasthan sikkim tamil_nadu telangana
     tripura uttarakhand uttaranchal uttar_pradesh west_bengal
   )
+
+  # All possible years for MPs
+  MP_YEARS = %w(2004 2009 2014 2019)
+
 end
