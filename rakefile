@@ -23,6 +23,85 @@ namespace :db do
     NetaScraper.scrape_mps
     puts 'Done scraping'
   end
+
+  desc 'Scrape MPs for specific years (e.g., rake db:scrape_mps[2019,2024])'
+  task :scrape_mps, [:years] do |t, args|
+    require_relative 'lib/neta_scraper.rb'
+    require_relative 'models.rb'
+
+    years_to_scrape = if args[:years]
+                        args[:years].split(',').map(&:strip)
+                      else
+                        # Scrape all available years if none specified
+                        puts "No years specified, scraping all available..."
+                        nil
+                      end
+
+    puts "Starting to scrape MP data for: #{years_to_scrape || 'all available years'}"
+
+    urls = NetaScraper.mp_urls
+    urls.each do |year, url|
+      if years_to_scrape.nil? || years_to_scrape.include?(year)
+        puts "Checking year #{year}..."
+
+        # Check if already scraped to avoid duplicates
+        existing = MP.filter(year: year).count
+        if existing > 0
+          puts "  - Year #{year} already has #{existing} records, skipping..."
+          puts "  - To re-scrape, delete existing records first"
+          next
+        end
+
+        puts "  - Scraping #{year}..."
+        NetaScraper.scrape_mp_year(year, url)
+      end
+    end
+    puts 'Done scraping MPs!'
+  end
+
+  desc 'Re-scrape MPs (deletes existing data first) for specific years (e.g., rake db:rescrape_mps[2024])'
+  task :rescrape_mps, [:years] do |t, args|
+    require_relative 'lib/neta_scraper.rb'
+    require_relative 'models.rb'
+
+    years_to_scrape = if args[:years]
+                        args[:years].split(',').map(&:strip)
+                      else
+                        puts "ERROR: Please specify years to re-scrape"
+                        puts "Usage: rake db:rescrape_mps[2024] or rake db:rescrape_mps[2019,2024]"
+                        exit 1
+                      end
+
+    puts "WARNING: This will DELETE existing data for: #{years_to_scrape.join(', ')}"
+    print "Are you sure? (yes/no): "
+    confirm = STDIN.gets.chomp
+
+    unless confirm.downcase == 'yes'
+      puts "Aborted."
+      exit 0
+    end
+
+    urls = NetaScraper.mp_urls
+    years_to_scrape.each do |year|
+      if urls.key?(year)
+        puts "Deleting existing MP data for #{year}..."
+        deleted = MP.filter(year: year).delete
+        puts "  - Deleted #{deleted} records"
+
+        puts "  - Scraping #{year}..."
+        NetaScraper.scrape_mp_year(year, urls[year])
+      else
+        puts "  - Year #{year} not found in known URLs, skipping..."
+      end
+    end
+    puts 'Done re-scraping MPs!'
+  end
+
+  desc 'Show database statistics'
+  task :stats do
+    require_relative 'lib/db_stats'
+    DbStats.run
+  end
 end
 
 require 'rspec/core/rake_task'
