@@ -37,18 +37,6 @@ class DbStats
     mla_count = MLA.count
     puts "Members of Legislative Assembly (MLAs):"
     puts "  Total MLAs: #{format_number(mla_count)}"
-
-    return if mla_count == 0
-
-    puts
-    puts "  Top 10 States by MLAs:"
-    MLA.select_group(:state).
-         select_append { [Sequel.lit('COUNT(*)').as(:mla_count)] }.
-         order(Sequel.desc(:mla_count)).
-         limit(10).
-         each do |row|
-      puts "    #{row[:state]}: #{format_number(row[:mla_count])}"
-    end
     puts
   end
 
