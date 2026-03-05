@@ -15,14 +15,15 @@ class DbStats
   end
 
   def self.print_mp_stats
-    mp_count = MP.count
-    expected_total = 543  # Total Lok Sabha seats
     puts "Members of Parliament (MPs):"
-    puts "  Total MPs: #{format_number(mp_count)}/#{format_number(expected_total)}"
 
-    return if mp_count == 0
-
+    mp_count = MP.count
     mp_years = MP.select_map(:year).uniq.sort
+
+    puts "  Total MPs (across all years): #{format_number(mp_count)}"
+
+    return if mp_years.empty?
+
     puts "  Years scraped: #{mp_years.join(', ')}"
     puts
     puts "  By Year:"
@@ -45,7 +46,7 @@ class DbStats
     puts
     puts "  Top 10 States by MLAs:"
     MLA.select_group(:state).
-         select { [state, count.as(:mla_count)] }.
+         select { [state, Sequel.function(:count).as(:mla_count)] }.
          order(Sequel.desc(:mla_count)).
          limit(10).
          each do |row|
