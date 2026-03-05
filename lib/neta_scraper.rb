@@ -115,13 +115,15 @@ class NetaScraper
 
     begin
       page = Nokogiri::HTML(URI.open(url))
+      puts "  Page loaded, finding table..."
       table = find_winners_table(page, year)
 
       unless table
-        puts "Could not find winners table for #{year}"
+        puts "  Could not find winners table for #{year}"
         return []
       end
 
+      puts "  Table found, scraping data..."
       # Determine structure based on year
       if year.to_i >= 2019
         # New structure: 8 columns
@@ -131,8 +133,8 @@ class NetaScraper
         scrape_mp_data_old_structure(year, table)
       end
     rescue => e
-      puts "Error scraping #{year}: #{e.message}"
-      puts e.backtrace.first(5)
+      puts "  Error scraping #{year}: #{e.message}"
+      puts e.backtrace.first(3)
       []
     end
   end
@@ -240,9 +242,11 @@ class NetaScraper
       # Save to database
       begin
         MP.new(data).save
+        puts "  [#{mps_data.count}] #{data[:name]} (#{data[:constituency]}, #{data[:state_or_ut] || 'Unknown State'})"
       rescue Sequel::DatabaseError => e
         # Ignore duplicates
         duplicate_count += 1
+        puts "  [DUP] #{data[:name]} (#{data[:constituency]})"
       end
     end
 
