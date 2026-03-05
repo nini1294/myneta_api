@@ -24,7 +24,6 @@ class DbStats
 
     return if mp_years.empty?
 
-    puts "  Years scraped: #{mp_years.join(', ')}"
     puts
     puts "  By Year:"
     mp_years.each do |year|
@@ -41,12 +40,10 @@ class DbStats
 
     return if mla_count == 0
 
-    mla_states = MLA.select_map(:state).uniq.sort
-    puts "  States scraped: #{mla_states.join(', ')}"
     puts
     puts "  Top 10 States by MLAs:"
     MLA.select_group(:state).
-         select { [state, Sequel.function(:count).as(:mla_count)] }.
+         select { [state, Sequel.function(:count, :*).as(:mla_count)] }.
          order(Sequel.desc(:mla_count)).
          limit(10).
          each do |row|
