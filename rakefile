@@ -16,6 +16,41 @@ namespace :db do
     end
   end
 
+  desc 'Export MP data for specific years to JSON (e.g., rake db:export_mps[2019,2024])'
+  task :export_mps, [:years] do |t, args|
+    require_relative 'export_mps'
+    years = args[:years] ? args[:years].split(',') : ['2019', '2024']
+    MPExporter.export(years)
+  end
+
+  desc 'Export MP data to SQL format (e.g., rake db:export_mps_sql[2019,2024])'
+  task :export_mps_sql, [:years] do |t, args|
+    require_relative 'export_mps'
+    years = args[:years] ? args[:years].split(',') : ['2019', '2024']
+    MPExporter.export_sql(years)
+  end
+
+  desc 'Import MP data from JSON (e.g., rake db:import_mps or rake db:import_mps[mp_data_export.json])'
+  task :import_mps, [:file] do |t, args|
+    require_relative 'import_mps'
+    file = args[:file] || 'mp_data_export.json'
+    MPImporter.import_json(file)
+  end
+
+  desc 'Import MP data from SQL (e.g., rake db:import_mps_sql or rake db:import_mps_sql[mp_data_export.sql])'
+  task :import_mps_sql, [:file] do |t, args|
+    require_relative 'import_mps'
+    file = args[:file] || 'mp_data_export.sql'
+    MPImporter.import_sql(file)
+  end
+
+  desc 'Import MP data, force replace existing (e.g., rake db:import_force[file.json])'
+  task :import_force, [:file] do |t, args|
+    require_relative 'import_mps'
+    file = args[:file] || 'mp_data_export.json'
+    MPImporter.import_json(file, force: true)
+  end
+
   task :scrape do |t, args|
     require_relative 'lib/neta_scraper.rb'
     puts 'Started scraping...'
@@ -112,6 +147,11 @@ namespace :db do
     ARGV.clear
     IRB.start
   end
+end
+
+desc 'Diagnose 2019 MP data for missing or incorrect entries'
+task :diagnose_2019 do
+  require_relative 'diagnose_2019.rb'
 end
 
 require 'rspec/core/rake_task'

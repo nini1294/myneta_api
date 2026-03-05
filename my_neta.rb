@@ -7,12 +7,38 @@ require_relative './models.rb'
 require_relative 'lib/common/constants.rb'
 require_relative 'lib/common/utils.rb'
 
+# Helper to fix encoding in data structures
+def fix_encoding(obj)
+  case obj
+  when Hash
+    obj.transform_values { |v| fix_encoding(v) }
+  when Array
+    obj.map { |v| fix_encoding(v) }
+  when String
+    # Force UTF-8 encoding with replacement for invalid bytes
+    begin
+      obj.encode('UTF-8')
+    rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
+      obj.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace, replace: '?')
+    end
+  else
+    obj
+  end
+end
+
 # Main app class
 class MyNeta < Roda
     # All possible years for MPs
     YEARS = %w(2004 2009 2014 2019 2024)
 
-    plugin :json, serializer: proc { |o| JSON.pretty_generate(o) }
+    plugin :json, serializer: proc { |o|
+      begin
+        JSON.pretty_generate(o)
+      rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError => e
+        # Fix encoding issues and retry
+        JSON.pretty_generate(fix_encoding(o))
+      end
+    }
     plugin :slash_path_empty
 
     route do |r|
