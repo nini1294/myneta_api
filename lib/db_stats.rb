@@ -43,7 +43,7 @@ class DbStats
     puts
     puts "  Top 10 States by MLAs:"
     MLA.select_group(:state).
-         select { [state, Sequel.function(:count, :*).as(:mla_count)] }.
+         select_append { [Sequel.lit('COUNT(*)').as(:mla_count)] }.
          order(Sequel.desc(:mla_count)).
          limit(10).
          each do |row|
