@@ -8,7 +8,8 @@ gem 'roda'
 gem 'dotenv'
 gem "nokogiri", ">= 1.12.5"
 gem 'sequel'
-gem 'pg'
+gem 'sqlite3'  # SQLite for local development
+# gem 'pg'  # PostgreSQL for production - uncomment on remote server
 gem 'rack-unreloader'
 
 group :test do

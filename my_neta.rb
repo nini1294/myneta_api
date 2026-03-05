@@ -10,7 +10,7 @@ require_relative 'lib/common/utils.rb'
 # Main app class
 class MyNeta < Roda
     # All possible years for MPs
-    YEARS = %w(2004 2009 2014 2019)
+    YEARS = %w(2004 2009 2014 2019 2024)
 
     plugin :json, serializer: proc { |o| JSON.pretty_generate(o) }
     plugin :slash_path_empty
