@@ -102,6 +102,16 @@ namespace :db do
     require_relative 'lib/db_stats'
     DbStats.run
   end
+
+  desc 'Open database console (IRB)'
+  task :console do
+    require_relative 'models.rb'
+    puts "Loading console with MP and MLA models..."
+    puts "Type 'MP' or 'MLA' to query, 'exit' to quit"
+    require 'irb'
+    ARGV.clear
+    IRB.start
+  end
 end
 
 require 'rspec/core/rake_task'
